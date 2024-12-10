@@ -1,65 +1,30 @@
-import * as roleServices from '../src/services/roleServices';
-import { Role } from './models/roles';
+//import * as roleServices from '../src/services/roleServices';
+//import * as userServices from '../src/services/userServices';
+//import { Role } from './models/roles';
 import { defaultAdm } from './services/userServices';
 
-const readline = require('readline');
-let rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
 
-function actions() {
-  rl.question('Is this example useful? [y/n/q] ', (answer: string) => {
-    switch (answer.toLowerCase()) {
-      case 'y':
-        console.log("----- Cadastrar novo usuário -----");
+import { Command } from "commander";
 
-        rl.question('\nDigite o nome do usuário: ', (name: string) => {
-          rl.question('\nDigite o email: ', (email: string) => {
-            rl.question('\nDigite a senha: ', (password: string) => {
-              rl.question('\nDigite a idade: ', (ageStr: string) => {
-                const age = parseInt(ageStr, 10);
+const program = new Command();
 
-                console.log("1 - Administrador\n2 - Professor\n3 - Visitante");
-                rl.question('\nSelecione o nível de acesso do usuário: ', (roleAnswer: string) => {
-                  let role: Role;
-                  if (roleAnswer === '1' || roleAnswer.toLowerCase() === 'administrador') {
-                    role = roleServices.admRole;
-                  } else if (roleAnswer === '2' || roleAnswer.toLowerCase() === 'professor') {
-                    role = roleServices.profRole;
-                  } else if (roleAnswer === '3' || roleAnswer.toLowerCase() === 'visitante') {
-                    role = roleServices.guestRole;
-                  } else {
-                    console.log('Opção inválida! Usando "Visitante" como padrão.');
-                    role = roleServices.guestRole;
-                  }
-
-                  // Chamar o método de registro
-                  defaultAdm.registerUser(name, email, password, age, role);
-                  console.log("Usuário registrado com sucesso!");
-                  actions(); // Volta ao menu inicial
-                });
-              });
-            });
-          });
-        });
-        break;
-
-      case 'n':
-        console.log('Exemplo não é útil.');
-        actions(); // Volta ao menu inicial
-        break;
-
-      case 'q':
-        console.log('Saindo do programa.');
-        rl.close(); // Encerra o programa
-        break;
-
-      default:
-        console.log('Resposta inválida!');
-        actions(); // Volta ao menu inicial
-    }
+program
+  .command("newuser")
+  .description("Add a new user")
+  .argument("<name>", "User name")
+  .argument("<email>", "User email")
+  .argument("<password>", "User password")
+  .argument("<age>", "User age")
+  .argument("<role>", "User role")
+  .action((name, email, password, age, role) => {
+   defaultAdm.registerUser(name, email, password, age, role);
   });
-}
 
-actions();
+  
+
+
+program.parse();
+
+
+
+//  registerUser(name:string, email:string, password:string, age:number, role:Roles):void{
