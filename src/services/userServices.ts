@@ -25,11 +25,12 @@ class Users implements User{
         this.status       = true;
     }
 
-    registerUser(name:string, email:string, password:string, age:number, role:string):void{
+    registerUser(name:string, email:string, password:string, age:number, roles:string):void{
         let emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
         let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/;
         let nameRegex = /^[\s\S]{3,25}$/;
         let error:string[] = [];
+        let role = roles.toLocaleLowerCase();
         if(this.role.regisrterPerm){
             
                 if(!nameRegex.test(name)){
@@ -56,11 +57,7 @@ class Users implements User{
                     error.push("Selecione entre os niveis de acesso existente! 'adm', 'guest' ou 'prof'")
                 }
 
-        }
-        else{
-            console.log("Você não tem a permissão necessaria para realizar essa ação")
-        }
-            if(error.length<=0){
+                if(error.length<=0){
 
                 let userRole: Roles;
                 if (role === "adm") {
@@ -75,14 +72,19 @@ class Users implements User{
                 users.push(newUser);
                 console.log("Usuário criado com Sucesso");
                 console.log(users)
-            }
-            else{
-                console.clear();
-                console.log("----- TENTE NOVAMENTE -----")
-                error.forEach((error) =>{
-                    console.log(error)
-                })
-            }
+                }
+
+                else{
+                    console.clear();
+                    console.log("----- TENTE NOVAMENTE -----")
+                    error.forEach((error) =>{
+                        console.log(error)
+                    })
+                }
+        }
+        else{
+            console.log("Você não tem a permissão necessaria para realizar essa ação")
+        }
     }    
 }
 export const defaultAdm  = new Users("defaultAdm","teste@gmail.com","'123",18, admRole);

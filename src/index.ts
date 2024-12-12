@@ -1,7 +1,8 @@
 //import * as roleServices from '../src/services/roleServices';
 //import * as userServices from '../src/services/userServices';
 //import { Role } from './models/roles';
-import { defaultAdm } from './services/userServices';
+//import defaultGuest from './services/userServices';
+import {defaultAdm } from './services/userServices';
 
 
 import { Command } from "commander";
@@ -19,9 +20,6 @@ program
   .action((name, email, password, age, role) => {
    defaultAdm.registerUser(name, email, password, age, role);
   });
-
-  
-
 
 program.parse();
 

@@ -1,12 +1,14 @@
 import { Role } from "../models/roles";
 
- export class Roles implements Role {
-    name:string
+export class Roles implements Role {
+    name: string
     regisrterPerm: boolean;
     listAllPerm: boolean;
     listByIdPerm: boolean;
     deletePerm: boolean;
     updatePerm: boolean;
+
+    
 
     constructor(
         name:string,
@@ -25,6 +27,6 @@ import { Role } from "../models/roles";
     }
 }
 
-export const admRole = new Roles("adm", true, true, true, true, true);
+export const admRole   = new Roles("adm", true, true, true, true, true);
 export const guestRole = new Roles("guest", false, true, true, false, false);
-export const profRole = new Roles("prof",true, true, true, false, true);
+export const profRole  = new Roles("prof",true, true, true, false, true);
