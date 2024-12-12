@@ -5,7 +5,6 @@ export interface User {
     name: string,
     email: string,
     password: string,
-    age: number,
     role: Role,
     registerDate: Date,
     lastEdit: Date,

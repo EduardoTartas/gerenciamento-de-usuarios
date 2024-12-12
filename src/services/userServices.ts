@@ -7,25 +7,23 @@ class Users implements User{
     name: string;
     email: string;
     password: string;
-    age: number;
     role: Roles;
     registerDate: Date;
     lastEdit: Date;
     status: boolean;
 
-    constructor(name: string, email: string, password: string, age: number, role: Roles){
+    constructor(name: string, email: string, password: string, role: Roles){
         this.id           = uuid();
         this.name         = name;
         this.email        = email;
         this.password     = password;
-        this.age          = age;
         this.role         = role
         this.registerDate = new Date();
         this.lastEdit     = new Date();
         this.status       = true;
     }
 
-    registerUser(name:string, email:string, password:string, age:number, roles:string):void{
+    registerUser(name:string, email:string, password:string, roles:string):void{
         let emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
         let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/;
         let nameRegex = /^[\s\S]{3,25}$/;
@@ -49,10 +47,6 @@ class Users implements User{
                     error.push("Digite uma senha com no mínimo 8 caracteres, letras maiúsculas, letras minúsculas")
                 }
 
-                if(age<=0 || age>=120){
-                    error.push("Digite uma idade valida")
-                }
-
                 if(role !== "adm" && role !== "guest" && role !== "prof" ){
                     error.push("Selecione entre os niveis de acesso existente! 'adm', 'guest' ou 'prof'")
                 }
@@ -68,7 +62,7 @@ class Users implements User{
                     userRole = profRole;
                 }
 
-                const newUser = new Users(name, email, password, age, userRole);
+                const newUser = new Users(name, email, password, userRole);
                 users.push(newUser);
                 console.log("Usuário criado com Sucesso");
                 console.log(users)
@@ -87,8 +81,8 @@ class Users implements User{
         }
     }    
 }
-export const defaultAdm  = new Users("defaultAdm","teste@gmail.com","'123",18, admRole);
-export const defaultGuest = new Users("defaultGuest","teste@gmail.com","'123",18, guestRole);
-export const defaultProf = new  Users("defaultProf","teste@gmail.com","'123",18, profRole);
+export const defaultAdm  = new Users("defaultAdm","teste@gmail.com","'123", admRole);
+export const defaultGuest = new Users("defaultGuest","teste@gmail.com","'123", guestRole);
+export const defaultProf = new  Users("defaultProf","teste@gmail.com","'123", profRole);
 
 let users:Users[] = [];
