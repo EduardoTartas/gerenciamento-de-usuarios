@@ -83,3 +83,11 @@ program
 program.parse();
 
 
+/* PARA FAZER
+1. Terminar funções principais
+    1.1. exluir
+    1.2. editar
+    1.3. trocar função
+2. Criptografia da senha
+3. Salvar no aquivo csv
+*/
