@@ -12,6 +12,6 @@ class Roles {
     }
 }
 exports.Roles = Roles;
-exports.admRole = new Roles("adm", true, true, true, true, true);
-exports.guestRole = new Roles("guest", false, true, true, false, false);
-exports.profRole = new Roles("prof", true, true, true, false, true);
+exports.admRole = new Roles("Administrador", true, true, true, true, true);
+exports.guestRole = new Roles("Visitante", false, true, true, false, false);
+exports.profRole = new Roles("Professor", true, true, true, false, true);

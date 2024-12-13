@@ -1,8 +1,9 @@
 import { User } from './../models/user';
 import { v4 as uuid } from 'uuid';
 import { admRole, guestRole, profRole, Roles } from './../services/roleServices';
+import chalk from 'chalk';
 
-class Users implements User{
+export class Users implements User{
     id: string;
     name: string;
     email: string;
@@ -17,7 +18,7 @@ class Users implements User{
         this.name         = name;
         this.email        = email;
         this.password     = password;
-        this.role         = role
+        this.role         = role;
         this.registerDate = new Date();
         this.lastEdit     = new Date();
         this.status       = true;
@@ -29,26 +30,23 @@ class Users implements User{
         let nameRegex = /^[\s\S]{3,25}$/;
         let error:string[] = [];
         let role = roles.toLocaleLowerCase();
-        if(this.role.regisrterPerm){
             
                 if(!nameRegex.test(name)){
-                    error.push("Digite o nome do usuário, com no mínimo 3 e no maximo 25 caracteres");
+                    error.push(`${chalk.bold("ERROR!000: ")}Digite o nome do usuário, com no mínimo 3 e no maximo 25 caracteres`);
                 }
-
                 /* ------- */
 
                 if(!emailRegex.test(email)){
-                    error.push("Digite um email válido para o usuário");
+                    error.push(`${chalk.bold("ERROR!001: ")}Digite um email válido para o usuário`);
                 }
-
                 /* ------- */
 
                 if(!passwordRegex.test(password)){
-                    error.push("Digite uma senha com no mínimo 8 caracteres, letras maiúsculas, letras minúsculas")
+                    error.push(`${chalk.bold("ERROR!002: ")}Digite uma senha com no mínimo 8 caracteres, letras maiúsculas, letras minúsculas e um caracter especial`);
                 }
 
                 if(role !== "adm" && role !== "guest" && role !== "prof" ){
-                    error.push("Selecione entre os niveis de acesso existente! 'adm', 'guest' ou 'prof'")
+                    error.push(`${chalk.bold("ERROR!003: ")}Selecione entre os niveis de acesso existente! 'adm', 'guest' ou 'prof'`);
                 }
 
                 if(error.length<=0){
@@ -64,25 +62,69 @@ class Users implements User{
 
                 const newUser = new Users(name, email, password, userRole);
                 users.push(newUser);
+                clear();
                 console.log("Usuário criado com Sucesso");
-                console.log(users)
+                console.log(users);
                 }
 
                 else{
-                    console.clear();
-                    console.log("----- TENTE NOVAMENTE -----")
+                    clear();
+                    console.log(`${chalk.bold(`----- TENTE NOVAMENTE -----`)}`);
                     error.forEach((error) =>{
-                        console.log(error)
+                        console.log(error);
                     })
                 }
+    }
+
+    listUsers():void{
+        if(users.length <= 0){
+            clear();
+            console.log(`${chalk.bold("ERROR!004: ")}Nenhum usuário encontrado`);
         }
         else{
-            console.log("Você não tem a permissão necessaria para realizar essa ação")
+            clear();
+            console.log(`${chalk.bold(`----- USUÁRIOS CADASTRADOS -----`)}`);
+            users.forEach(user =>{
+                console.log(`\nID: ${chalk.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
+            })
         }
-    }    
+    }
+
+    //list user by ID
+    listUserByID(id:string):void{
+        let filterdUsers:User[] = users.filter(user => user.id === id);
+
+        if(filterdUsers.length <= 0){
+            clear();
+            console.log(filterdUsers);
+            console.log(`${chalk.bold("ERROR!005: ")}Nenhum usuário encontrado`);
+        }
+        else{
+            clear();
+            console.log(`${chalk.bold(`----- USUÁRIO FILTRADO -----`)}`);
+            filterdUsers.forEach(user =>{
+                console.log(`\nID: ${chalk.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
+            })
+        }
+    }   
 }
+
+export function clear():void{
+    console.log('\x1Bc');
+}
+
 export const defaultAdm  = new Users("defaultAdm","teste@gmail.com","'123", admRole);
 export const defaultGuest = new Users("defaultGuest","teste@gmail.com","'123", guestRole);
 export const defaultProf = new  Users("defaultProf","teste@gmail.com","'123", profRole);
+const teste1 = new Users("teste", "teste@teste.com", "123teste" , admRole);
+const teste2 = new Users("teste2", "teste@teste.com", "123teste" , guestRole);
+const teste3 = new Users("teste3", "teste@teste.com", "123teste" , profRole);
+teste1.id = "123";
 
-let users:Users[] = [];
+
+/*function userValid():void{
+
+}*/
+
+export let users:Users[] = [];
+users.push(teste1, teste2,teste3);
