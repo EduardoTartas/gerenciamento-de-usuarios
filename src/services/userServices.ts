@@ -116,15 +116,5 @@ export function clear():void{
 export const defaultAdm  = new Users("defaultAdm","teste@gmail.com","'123", admRole);
 export const defaultGuest = new Users("defaultGuest","teste@gmail.com","'123", guestRole);
 export const defaultProf = new  Users("defaultProf","teste@gmail.com","'123", profRole);
-const teste1 = new Users("teste", "teste@teste.com", "123teste" , admRole);
-const teste2 = new Users("teste2", "teste@teste.com", "123teste" , guestRole);
-const teste3 = new Users("teste3", "teste@teste.com", "123teste" , profRole);
-teste1.id = "123";
-
-
-/*function userValid():void{
-
-}*/
 
 export let users:Users[] = [];
-users.push(teste1, teste2,teste3);

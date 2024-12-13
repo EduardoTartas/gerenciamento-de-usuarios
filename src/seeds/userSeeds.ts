@@ -1,7 +1,7 @@
-/*import * as role from '../services/roleServices';
+import * as role from '../services/roleServices';
 import * as users from './../services/userServices';
 
-export const teste1 = new users.Users("teste", "teste@teste.com", "123teste" , role.admRole);
+/*export const teste1 = new users.Users("teste", "teste@teste.com", "123teste" , role.admRole);
 export const teste2 = new users.Users("teste", "teste@teste.com", "123teste" , role.admRole);
 export const teste3 = new users.Users("teste", "teste@teste.com", "123teste" , role.guestRole);
 export const teste4 = new users.Users("teste", "teste@teste.com", "123teste" , role.guestRole);
@@ -13,3 +13,10 @@ export const teste9 = new users.Users("teste", "teste@teste.com", "123teste" , r
 
 users.users.push(teste1)*/
 
+
+export const teste1 = new users.Users("teste", "teste@teste.com", "123teste" , role.admRole);
+export const teste2 = new users.Users("teste2", "teste@teste.com", "123teste" ,role.guestRole);
+export const teste3 = new users.Users("teste3", "teste@teste.com", "123teste" ,role.profRole);
+teste1.id = "123";
+
+users.users.push(teste1, teste2, teste3);

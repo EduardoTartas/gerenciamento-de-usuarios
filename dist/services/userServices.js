@@ -101,12 +101,4 @@ function clear() {
 exports.defaultAdm = new Users("defaultAdm", "teste@gmail.com", "'123", roleServices_1.admRole);
 exports.defaultGuest = new Users("defaultGuest", "teste@gmail.com", "'123", roleServices_1.guestRole);
 exports.defaultProf = new Users("defaultProf", "teste@gmail.com", "'123", roleServices_1.profRole);
-const teste1 = new Users("teste", "teste@teste.com", "123teste", roleServices_1.admRole);
-const teste2 = new Users("teste2", "teste@teste.com", "123teste", roleServices_1.guestRole);
-const teste3 = new Users("teste3", "teste@teste.com", "123teste", roleServices_1.profRole);
-teste1.id = "123";
-/*function userValid():void{
-
-}*/
 exports.users = [];
-exports.users.push(teste1, teste2, teste3);

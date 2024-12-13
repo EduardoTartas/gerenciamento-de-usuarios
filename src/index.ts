@@ -1,7 +1,13 @@
+
 //import * as roleServices from '../src/services/roleServices';
 //import * as userServices from '../src/services/userServices';
 //import { Role } from './models/roles';
 //import defaultGuest from './services/userServices';
+
+//apenas para sincronizar o seeds com o index
+import * as seeds from './seeds/userSeeds';
+console.log(seeds.teste1)
+
 import {defaultAdm,clear} from './services/userServices';
 import { Command } from "commander";
 import chalk from 'chalk';
