@@ -15,10 +15,9 @@ program
   .argument("<name>", "User name")
   .argument("<email>", "User email")
   .argument("<password>", "User password")
-  .argument("<age>", "User age")
   .argument("<role>", "User role")
-  .action((name, email, password, age, role) => {
-   defaultAdm.registerUser(name, email, password, age, role);
+  .action((name, email, password, role) => {
+   defaultAdm.registerUser(name, email, password, role);
   });
 
 program.parse();
