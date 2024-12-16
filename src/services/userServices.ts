@@ -1,9 +1,11 @@
 import { User } from './../models/user';
 import { v4 as uuid } from 'uuid';
 import { admRole, guestRole, profRole, Roles } from './../services/roleServices';
+import {currentUser} from '../index';
 import chalk from 'chalk';
-
+export let users:Users[] = [];
 export class Users implements User{
+
     id: string;
     name: string;
     email: string;
@@ -86,6 +88,9 @@ export class Users implements User{
             console.log(`${chalk.bold(`----- USUÁRIOS CADASTRADOS -----`)}`);
             users.forEach(user =>{
                 console.log(`\nID: ${chalk.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
+                if(currentUser == defaultAdm){
+                    console.log(`Senha: ${user.password}`);   
+                }
             })
         }
     }
@@ -96,7 +101,6 @@ export class Users implements User{
 
         if(filterdUsers.length <= 0){
             clear();
-            console.log(filterdUsers);
             console.log(`${chalk.bold("ERROR!005: ")}Nenhum usuário encontrado`);
         }
         else{
@@ -104,9 +108,35 @@ export class Users implements User{
             console.log(`${chalk.bold(`----- USUÁRIO FILTRADO -----`)}`);
             filterdUsers.forEach(user =>{
                 console.log(`\nID: ${chalk.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
+                if(currentUser == defaultAdm){
+                    console.log(`Senha: ${user.password}`);   
+                }
             })
         }
-    }   
+    }
+    
+    //delete user by id (verificar depois com o csv)
+    deleteUser(id: string): void {
+        const userIndex = users.findIndex(user => user.id === id);
+    
+        if (userIndex === -1) {
+            clear();
+            console.log(`${chalk.bold("ERROR!006: ")}Nenhum usuário encontrado`);
+        } else {
+            clear();
+            console.log(`${chalk.bold(`----- USUÁRIO DELETADO -----`)}`);
+            console.log(`\nID: ${chalk.bold.green(users[userIndex].id)}\nNome: ${users[userIndex].name}\nE-mail: ${users[userIndex].email}\nNivel de acesso: ${users[userIndex].role.name}`);
+            console.log(`\nUsuário ${chalk.bold('DELETADO')} com sucesso da lista de usuários!`);
+            users.splice(userIndex, 1);
+        }
+    }
+
+    editUser(id:string, field:string, info:string):void {
+        //editUser(ID, field, info);
+        
+    }
+
+
 }
 
 export function clear():void{
@@ -117,4 +147,4 @@ export const defaultAdm  = new Users("defaultAdm","teste@gmail.com","'123", admR
 export const defaultGuest = new Users("defaultGuest","teste@gmail.com","'123", guestRole);
 export const defaultProf = new  Users("defaultProf","teste@gmail.com","'123", profRole);
 
-export let users:Users[] = [];
+
