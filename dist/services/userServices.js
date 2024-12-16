@@ -3,11 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.users = exports.defaultProf = exports.defaultGuest = exports.defaultAdm = exports.Users = void 0;
+exports.defaultProf = exports.defaultGuest = exports.defaultAdm = exports.Users = exports.users = void 0;
 exports.clear = clear;
 const uuid_1 = require("uuid");
 const roleServices_1 = require("./../services/roleServices");
 const chalk_1 = __importDefault(require("chalk"));
+exports.users = [];
 class Users {
     constructor(name, email, password, role) {
         this.id = (0, uuid_1.v4)();
@@ -75,6 +76,7 @@ class Users {
             exports.users.forEach(user => {
                 console.log(`\nID: ${chalk_1.default.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
             });
+            console.log(exports.users);
         }
     }
     //list user by ID
@@ -82,7 +84,6 @@ class Users {
         let filterdUsers = exports.users.filter(user => user.id === id);
         if (filterdUsers.length <= 0) {
             clear();
-            console.log(filterdUsers);
             console.log(`${chalk_1.default.bold("ERROR!005: ")}Nenhum usuário encontrado`);
         }
         else {
@@ -93,6 +94,22 @@ class Users {
             });
         }
     }
+    //delete user by id
+    deleteUser(id) {
+        const userIndex = exports.users.findIndex(user => user.id === id);
+        if (userIndex === -1) {
+            clear();
+            console.log(`${chalk_1.default.bold("ERROR!006: ")}Nenhum usuário encontrado`);
+        }
+        else {
+            clear();
+            console.log(`${chalk_1.default.bold(`----- USUÁRIO DELETADO -----`)}`);
+            console.log(`\nID: ${chalk_1.default.bold.green(exports.users[userIndex].id)}\nNome: ${exports.users[userIndex].name}\nE-mail: ${exports.users[userIndex].email}\nNivel de acesso: ${exports.users[userIndex].role.name}`);
+            console.log(`\nUsuário ${chalk_1.default.bold('DELETADO')} com sucesso da lista de usuários!`);
+            // Remove the user from the array using splice
+            exports.users.splice(userIndex, 1);
+        }
+    }
 }
 exports.Users = Users;
 function clear() {
@@ -101,4 +118,3 @@ function clear() {
 exports.defaultAdm = new Users("defaultAdm", "teste@gmail.com", "'123", roleServices_1.admRole);
 exports.defaultGuest = new Users("defaultGuest", "teste@gmail.com", "'123", roleServices_1.guestRole);
 exports.defaultProf = new Users("defaultProf", "teste@gmail.com", "'123", roleServices_1.profRole);
-exports.users = [];

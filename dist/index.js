@@ -1,4 +1,8 @@
 "use strict";
+//import * as roleServices from '../src/services/roleServices';
+//import * as userServices from '../src/services/userServices';
+//import { Role } from './models/roles';
+//import defaultGuest from './services/userServices';
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -36,13 +40,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-//import * as roleServices from '../src/services/roleServices';
-//import * as userServices from '../src/services/userServices';
-//import { Role } from './models/roles';
-//import defaultGuest from './services/userServices';
+//apenas para sincronizar o seeds com o index
+const userServices_1 = require("./services/userServices");
 const seeds = __importStar(require("./seeds/userSeeds"));
 console.log(seeds.teste1);
-const userServices_1 = require("./services/userServices");
+(0, userServices_1.clear)();
 const commander_1 = require("commander");
 const chalk_1 = __importDefault(require("chalk"));
 const program = new commander_1.Command();
@@ -95,7 +97,7 @@ program
 //list users by id
 program
     .command("listUser")
-    .description(chalk_1.default.bold("Lista o usuário pelo o seu ID."))
+    .description(chalk_1.default.bold("Lista o usuário pelo seu ID."))
     .argument("<ID>", "User ID")
     .action((ID) => {
     if (!currentUser.role.listByIdPerm) {
@@ -111,6 +113,28 @@ program
         catch (error) {
             (0, userServices_1.clear)();
             console.log(error, "Não foi possivel listar os usuários.");
+        }
+    }
+});
+//delete user by id
+program
+    .command("deleteUser")
+    .description(chalk_1.default.bold("Remove o usuário pelo seu ID."))
+    .argument("<ID>", "User ID")
+    .action((ID) => {
+    if (!currentUser.role.deletePerm) {
+        (0, userServices_1.clear)();
+        console.log(chalk_1.default.bold("----- TENTE NOVAMENTE -----"));
+        console.log("Você não tem a permissão necessaria para realizar essa ação!");
+    }
+    else {
+        try {
+            (0, userServices_1.clear)();
+            currentUser.deleteUser(ID);
+        }
+        catch (error) {
+            (0, userServices_1.clear)();
+            console.log(error, "Não foi possivel excluir o usuário.");
         }
     }
 });
