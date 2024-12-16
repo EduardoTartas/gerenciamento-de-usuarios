@@ -40,6 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.currentUser = void 0;
 //apenas para sincronizar o seeds com o index
 const userServices_1 = require("./services/userServices");
 const seeds = __importStar(require("./seeds/userSeeds"));
@@ -48,7 +49,7 @@ console.log(seeds.teste1);
 const commander_1 = require("commander");
 const chalk_1 = __importDefault(require("chalk"));
 const program = new commander_1.Command();
-let currentUser = userServices_1.defaultAdm;
+exports.currentUser = userServices_1.defaultProf;
 //add a new user
 program
     .command("newUser")
@@ -58,14 +59,14 @@ program
     .argument("<password>", "User password")
     .argument("<role>", "User role")
     .action((name, email, password, role) => {
-    if (!currentUser.role.regisrterPerm) {
+    if (!exports.currentUser.role.regisrterPerm) {
         (0, userServices_1.clear)();
         console.log(chalk_1.default.bold("----- TENTE NOVAMENTE -----"));
         console.log("Você não tem a permissão necessaria para realizar essa ação!");
     }
     else {
         try {
-            currentUser.registerUser(name, email, password, role);
+            exports.currentUser.registerUser(name, email, password, role);
         }
         catch (error) {
             (0, userServices_1.clear)();
@@ -78,7 +79,7 @@ program
     .command("listUsers")
     .description(chalk_1.default.bold("Lista todos os usuários cadastrados."))
     .action(() => {
-    if (!currentUser.role.listAllPerm) {
+    if (!exports.currentUser.role.listAllPerm) {
         (0, userServices_1.clear)();
         console.log(chalk_1.default.bold("----- TENTE NOVAMENTE -----"));
         console.log("Você não tem a permissão necessaria para realizar essa ação!");
@@ -86,7 +87,7 @@ program
     else {
         try {
             (0, userServices_1.clear)();
-            currentUser.listUsers();
+            exports.currentUser.listUsers();
         }
         catch (error) {
             (0, userServices_1.clear)();
@@ -100,7 +101,7 @@ program
     .description(chalk_1.default.bold("Lista o usuário pelo seu ID."))
     .argument("<ID>", "User ID")
     .action((ID) => {
-    if (!currentUser.role.listByIdPerm) {
+    if (!exports.currentUser.role.listByIdPerm) {
         (0, userServices_1.clear)();
         console.log(chalk_1.default.bold("----- TENTE NOVAMENTE -----"));
         console.log("Você não tem a permissão necessaria para realizar essa ação!");
@@ -108,7 +109,7 @@ program
     else {
         try {
             (0, userServices_1.clear)();
-            currentUser.listUserByID(ID);
+            exports.currentUser.listUserByID(ID);
         }
         catch (error) {
             (0, userServices_1.clear)();
@@ -122,7 +123,7 @@ program
     .description(chalk_1.default.bold("Remove o usuário pelo seu ID."))
     .argument("<ID>", "User ID")
     .action((ID) => {
-    if (!currentUser.role.deletePerm) {
+    if (!exports.currentUser.role.deletePerm) {
         (0, userServices_1.clear)();
         console.log(chalk_1.default.bold("----- TENTE NOVAMENTE -----"));
         console.log("Você não tem a permissão necessaria para realizar essa ação!");
@@ -130,7 +131,7 @@ program
     else {
         try {
             (0, userServices_1.clear)();
-            currentUser.deleteUser(ID);
+            exports.currentUser.deleteUser(ID);
         }
         catch (error) {
             (0, userServices_1.clear)();
@@ -141,7 +142,6 @@ program
 program.parse();
 /* PARA FAZER
 1. Terminar funções principais
-    1.1. exluir
     1.2. editar
     1.3. trocar função
 2. Criptografia da senha

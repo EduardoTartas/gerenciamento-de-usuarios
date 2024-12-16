@@ -7,6 +7,7 @@ exports.defaultProf = exports.defaultGuest = exports.defaultAdm = exports.Users 
 exports.clear = clear;
 const uuid_1 = require("uuid");
 const roleServices_1 = require("./../services/roleServices");
+const index_1 = require("../index");
 const chalk_1 = __importDefault(require("chalk"));
 exports.users = [];
 class Users {
@@ -75,8 +76,10 @@ class Users {
             console.log(`${chalk_1.default.bold(`----- USUÁRIOS CADASTRADOS -----`)}`);
             exports.users.forEach(user => {
                 console.log(`\nID: ${chalk_1.default.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
+                if (index_1.currentUser == exports.defaultAdm) {
+                    console.log(`Senha: ${user.password}`);
+                }
             });
-            console.log(exports.users);
         }
     }
     //list user by ID
@@ -91,10 +94,13 @@ class Users {
             console.log(`${chalk_1.default.bold(`----- USUÁRIO FILTRADO -----`)}`);
             filterdUsers.forEach(user => {
                 console.log(`\nID: ${chalk_1.default.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
+                if (index_1.currentUser == exports.defaultAdm) {
+                    console.log(`Senha: ${user.password}`);
+                }
             });
         }
     }
-    //delete user by id
+    //delete user by id (verificar depois com o csv)
     deleteUser(id) {
         const userIndex = exports.users.findIndex(user => user.id === id);
         if (userIndex === -1) {
@@ -106,7 +112,6 @@ class Users {
             console.log(`${chalk_1.default.bold(`----- USUÁRIO DELETADO -----`)}`);
             console.log(`\nID: ${chalk_1.default.bold.green(exports.users[userIndex].id)}\nNome: ${exports.users[userIndex].name}\nE-mail: ${exports.users[userIndex].email}\nNivel de acesso: ${exports.users[userIndex].role.name}`);
             console.log(`\nUsuário ${chalk_1.default.bold('DELETADO')} com sucesso da lista de usuários!`);
-            // Remove the user from the array using splice
             exports.users.splice(userIndex, 1);
         }
     }
