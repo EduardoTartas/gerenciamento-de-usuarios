@@ -1,4 +1,37 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -9,6 +42,7 @@ const uuid_1 = require("uuid");
 const roleServices_1 = require("./../services/roleServices");
 const index_1 = require("../index");
 const chalk_1 = __importDefault(require("chalk"));
+const verify = __importStar(require("../utils/verificacao"));
 exports.users = [];
 class Users {
     constructor(name, email, password, role) {
@@ -22,26 +56,12 @@ class Users {
         this.status = true;
     }
     registerUser(name, email, password, roles) {
-        let emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-        let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/;
-        let nameRegex = /^[\s\S]{3,25}$/;
-        let error = [];
         let role = roles.toLocaleLowerCase();
-        if (!nameRegex.test(name)) {
-            error.push(`${chalk_1.default.bold("ERROR!000: ")}Digite o nome do usuário, com no mínimo 3 e no maximo 25 caracteres`);
-        }
-        /* ------- */
-        if (!emailRegex.test(email)) {
-            error.push(`${chalk_1.default.bold("ERROR!001: ")}Digite um email válido para o usuário`);
-        }
-        /* ------- */
-        if (!passwordRegex.test(password)) {
-            error.push(`${chalk_1.default.bold("ERROR!002: ")}Digite uma senha com no mínimo 8 caracteres, letras maiúsculas, letras minúsculas e um caracter especial`);
-        }
-        if (role !== "adm" && role !== "guest" && role !== "prof") {
-            error.push(`${chalk_1.default.bold("ERROR!003: ")}Selecione entre os niveis de acesso existente! 'adm', 'guest' ou 'prof'`);
-        }
-        if (error.length <= 0) {
+        verify.verifyName(name);
+        verify.verifyEmail(email);
+        verify.verifyPassword(password);
+        verify.verifyRole(role);
+        if (verify.error.length <= 0) {
             let userRole;
             if (role === "adm") {
                 userRole = roleServices_1.admRole;
@@ -49,9 +69,8 @@ class Users {
             else if (role === "guest") {
                 userRole = roleServices_1.guestRole;
             }
-            else {
+            else
                 userRole = roleServices_1.profRole;
-            }
             const newUser = new Users(name, email, password, userRole);
             exports.users.push(newUser);
             clear();
@@ -61,7 +80,7 @@ class Users {
         else {
             clear();
             console.log(`${chalk_1.default.bold(`----- TENTE NOVAMENTE -----`)}`);
-            error.forEach((error) => {
+            verify.error.forEach((error) => {
                 console.log(error);
             });
         }
@@ -113,6 +132,63 @@ class Users {
             console.log(`\nID: ${chalk_1.default.bold.green(exports.users[userIndex].id)}\nNome: ${exports.users[userIndex].name}\nE-mail: ${exports.users[userIndex].email}\nNivel de acesso: ${exports.users[userIndex].role.name}`);
             console.log(`\nUsuário ${chalk_1.default.bold('DELETADO')} com sucesso da lista de usuários!`);
             exports.users.splice(userIndex, 1);
+        }
+    }
+    editUser(id, field, info) {
+        let userIndex = exports.users.findIndex(user => user.id === id);
+        if (userIndex === -1) {
+            clear();
+            console.log(`${chalk_1.default.bold("ERROR!007: ")}Nenhum usuário encontrado`);
+        }
+        else {
+            switch (field) {
+                case "name":
+                    verify.verifyName(info);
+                    if (verify.error.length <= 0) {
+                        exports.users[userIndex].name = info;
+                    }
+                    break;
+                case "email":
+                    verify.verifyEmail(info);
+                    if (verify.error.length <= 0) {
+                        exports.users[userIndex].email = info;
+                    }
+                    break;
+                case "password":
+                    verify.verifyPassword(info);
+                    if (verify.error.length <= 0) {
+                        exports.users[userIndex].password = info;
+                    }
+                    break;
+                case "role":
+                    verify.verifyRole(info);
+                    if (verify.error.length <= 0) {
+                        let userRole;
+                        if (info === "adm") {
+                            userRole = roleServices_1.admRole;
+                        }
+                        else if (info === "guest") {
+                            userRole = roleServices_1.guestRole;
+                        }
+                        else
+                            userRole = roleServices_1.profRole;
+                        exports.users[userIndex].role = userRole;
+                    }
+                    break;
+                default:
+                    clear();
+                    verify.error.push(`${chalk_1.default.bold("ERROR!008: ")}Campo inválido!`);
+                    verify.error.forEach((error) => {
+                        console.log(error);
+                    });
+                    break;
+            }
+            if (verify.error.length <= 0) {
+                clear();
+                console.log(`${chalk_1.default.bold(`----- USUÁRIO EDITADO -----`)}`);
+                console.log(`\nID: ${chalk_1.default.bold.green(exports.users[userIndex].id)}\nNome: ${exports.users[userIndex].name}\nE-mail: ${exports.users[userIndex].email}\nNivel de acesso: ${exports.users[userIndex].role.name}`);
+                console.log(`\nCampo ${chalk_1.default.bold(field)} alterado com sucesso!`);
+            }
         }
     }
 }

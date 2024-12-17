@@ -3,7 +3,9 @@ import { v4 as uuid } from 'uuid';
 import { admRole, guestRole, profRole, Roles } from './../services/roleServices';
 import {currentUser} from '../index';
 import chalk from 'chalk';
+import * as verify from '../utils/verificacao';
 export let users:Users[] = [];
+
 export class Users implements User{
 
     id: string;
@@ -27,56 +29,40 @@ export class Users implements User{
     }
 
     registerUser(name:string, email:string, password:string, roles:string):void{
-        let emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-        let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/;
-        let nameRegex = /^[\s\S]{3,25}$/;
-        let error:string[] = [];
         let role = roles.toLocaleLowerCase();
-            
-                if(!nameRegex.test(name)){
-                    error.push(`${chalk.bold("ERROR!000: ")}Digite o nome do usuário, com no mínimo 3 e no maximo 25 caracteres`);
-                }
-                /* ------- */
 
-                if(!emailRegex.test(email)){
-                    error.push(`${chalk.bold("ERROR!001: ")}Digite um email válido para o usuário`);
-                }
-                /* ------- */
+        verify.verifyName(name);
+        verify.verifyEmail(email);
+        verify.verifyPassword(password);
+        verify.verifyRole(role);
 
-                if(!passwordRegex.test(password)){
-                    error.push(`${chalk.bold("ERROR!002: ")}Digite uma senha com no mínimo 8 caracteres, letras maiúsculas, letras minúsculas e um caracter especial`);
-                }
+        if(verify.error.length<=0){
+        let userRole: Roles;
 
-                if(role !== "adm" && role !== "guest" && role !== "prof" ){
-                    error.push(`${chalk.bold("ERROR!003: ")}Selecione entre os niveis de acesso existente! 'adm', 'guest' ou 'prof'`);
-                }
+        if (role === "adm") {
+            userRole = admRole;
+        } 
+        else if (role === "guest") {
+            userRole = guestRole;
+        } 
+        else userRole = profRole;
+        
 
-                if(error.length<=0){
-
-                let userRole: Roles;
-                if (role === "adm") {
-                    userRole = admRole;
-                } else if (role === "guest") {
-                    userRole = guestRole;
-                } else {
-                    userRole = profRole;
-                }
-
-                const newUser = new Users(name, email, password, userRole);
-                users.push(newUser);
-                clear();
-                console.log("Usuário criado com Sucesso");
-                console.log(users);
-                }
-
-                else{
-                    clear();
-                    console.log(`${chalk.bold(`----- TENTE NOVAMENTE -----`)}`);
-                    error.forEach((error) =>{
-                        console.log(error);
-                    })
-                }
+        const newUser = new Users(name, email, password, userRole);
+        users.push(newUser);
+        clear();
+        console.log("Usuário criado com Sucesso");
+        console.log(users);
+        }
+        else{
+            clear();
+            console.log(`${chalk.bold(`----- TENTE NOVAMENTE -----`)}`);
+            verify.error.forEach((error) =>{
+                console.log(error);
+            })
+        }
     }
+
 
     listUsers():void{
         if(users.length <= 0){
@@ -122,7 +108,8 @@ export class Users implements User{
         if (userIndex === -1) {
             clear();
             console.log(`${chalk.bold("ERROR!006: ")}Nenhum usuário encontrado`);
-        } else {
+        } 
+        else {
             clear();
             console.log(`${chalk.bold(`----- USUÁRIO DELETADO -----`)}`);
             console.log(`\nID: ${chalk.bold.green(users[userIndex].id)}\nNome: ${users[userIndex].name}\nE-mail: ${users[userIndex].email}\nNivel de acesso: ${users[userIndex].role.name}`);
@@ -132,11 +119,70 @@ export class Users implements User{
     }
 
     editUser(id:string, field:string, info:string):void {
-        //editUser(ID, field, info);
-        
+        let userIndex = users.findIndex(user => user.id === id);
+        if (userIndex === -1) {
+            clear();
+            console.log(`${chalk.bold("ERROR!007: ")}Nenhum usuário encontrado`);
+        }
+        else{
+            switch(field){
+
+                case "name":
+                    verify.verifyName(info);
+                    if(verify.error.length <= 0){
+                    users[userIndex].name = info;
+                    }
+                break;
+
+                case "email":
+                    verify.verifyEmail(info);
+                    if(verify.error.length <= 0){
+                    users[userIndex].email = info;
+                    }    
+                break;
+
+                case "password":
+                    verify.verifyPassword(info);  
+                    if(verify.error.length <= 0){
+                    users[userIndex].password = info;
+                    }
+                break;
+
+                case "role":
+                    verify.verifyRole(info);
+                    if(verify.error.length <= 0){
+                        let userRole: Roles;
+
+                        if (info === "adm") {
+                            userRole = admRole;
+                        } 
+                        else if (info === "guest") {
+                            userRole = guestRole;
+                        } 
+                        else userRole = profRole;
+
+                        users[userIndex].role = userRole;
+                    }
+                break;
+                
+                default:
+                    clear();
+                    verify.error.push(`${chalk.bold("ERROR!008: ")}Campo inválido!`);
+                    verify.error.forEach((error) =>{
+                        console.log(error);
+                    })
+                break
+            }
+            
+            if(verify.error.length <= 0){
+                clear();
+                console.log(`${chalk.bold(`----- USUÁRIO EDITADO -----`)}`);
+                console.log(`\nID: ${chalk.bold.green(users[userIndex].id)}\nNome: ${users[userIndex].name}\nE-mail: ${users[userIndex].email}\nNivel de acesso: ${users[userIndex].role.name}`);
+                console.log(`\nCampo ${chalk.bold(field)} alterado com sucesso!`);
+            }
+            
+        }
     }
-
-
 }
 
 export function clear():void{

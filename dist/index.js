@@ -49,7 +49,7 @@ console.log(seeds.teste1);
 const commander_1 = require("commander");
 const chalk_1 = __importDefault(require("chalk"));
 const program = new commander_1.Command();
-exports.currentUser = userServices_1.defaultProf;
+exports.currentUser = userServices_1.defaultAdm;
 //add a new user
 program
     .command("newUser")
@@ -136,6 +136,29 @@ program
         catch (error) {
             (0, userServices_1.clear)();
             console.log(error, "Não foi possivel excluir o usuário.");
+        }
+    }
+});
+//edit user infos
+program
+    .command("editUser")
+    .description(chalk_1.default.bold("Altera as informações do usuario."))
+    .argument("<ID>", "User ID")
+    .argument("<field>", "field that you want to change")
+    .argument("<info>", "New info for the field")
+    .action((ID, field, info) => {
+    if (!exports.currentUser.role.updatePerm) {
+        (0, userServices_1.clear)();
+        console.log(chalk_1.default.bold("----- TENTE NOVAMENTE -----"));
+        console.log("Você não tem a permissão necessaria para realizar essa ação!");
+    }
+    else {
+        try {
+            exports.currentUser.editUser(ID, field, info);
+        }
+        catch (error) {
+            (0, userServices_1.clear)();
+            console.log(error, "Não foi possivel cadastrar o novo usuário.");
         }
     }
 });

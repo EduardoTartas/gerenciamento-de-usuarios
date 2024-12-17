@@ -114,7 +114,7 @@ program
 //edit user infos
 program
   .command("editUser")
-  .description(chalk.bold("Adiciona um novo usuário."))
+  .description(chalk.bold("Altera as informações do usuario."))
   .argument("<ID>", "User ID")
   .argument("<field>", "field that you want to change")
   .argument("<info>", "New info for the field")
@@ -127,7 +127,7 @@ program
     }
     else{
       try{
-        //currentUser.registerUser(ID, field, info);
+        currentUser.editUser(ID, field, info);
       }
       catch(error){
         clear();
