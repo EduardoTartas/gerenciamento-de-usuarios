@@ -1,37 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -40,9 +7,8 @@ exports.defaultProf = exports.defaultGuest = exports.defaultAdm = exports.Users 
 exports.clear = clear;
 const uuid_1 = require("uuid");
 const roleServices_1 = require("./../services/roleServices");
-const index_1 = require("../index");
+const functions_1 = require("../utils/functions");
 const chalk_1 = __importDefault(require("chalk"));
-const verify = __importStar(require("../utils/verificacao"));
 exports.users = [];
 class Users {
     constructor(name, email, password, role) {
@@ -57,11 +23,11 @@ class Users {
     }
     registerUser(name, email, password, roles) {
         let role = roles.toLocaleLowerCase();
-        verify.verifyName(name);
-        verify.verifyEmail(email);
-        verify.verifyPassword(password);
-        verify.verifyRole(role);
-        if (verify.error.length <= 0) {
+        (0, functions_1.verifyName)(name);
+        (0, functions_1.verifyEmail)(email);
+        (0, functions_1.verifyPassword)(password);
+        (0, functions_1.verifyRole)(role);
+        if (functions_1.error.length <= 0) {
             let userRole;
             if (role === "adm") {
                 userRole = roleServices_1.admRole;
@@ -71,18 +37,16 @@ class Users {
             }
             else
                 userRole = roleServices_1.profRole;
-            const newUser = new Users(name, email, password, userRole);
+            const newUser = new Users(name, email, (0, functions_1.encrypt)(password), userRole);
             exports.users.push(newUser);
             clear();
             console.log("Usuário criado com Sucesso");
-            console.log(exports.users);
+            console.log(newUser);
         }
         else {
             clear();
             console.log(`${chalk_1.default.bold(`----- TENTE NOVAMENTE -----`)}`);
-            verify.error.forEach((error) => {
-                console.log(error);
-            });
+            (0, functions_1.showErrors)();
         }
     }
     listUsers() {
@@ -95,7 +59,7 @@ class Users {
             console.log(`${chalk_1.default.bold(`----- USUÁRIOS CADASTRADOS -----`)}`);
             exports.users.forEach(user => {
                 console.log(`\nID: ${chalk_1.default.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
-                if (index_1.currentUser == exports.defaultAdm) {
+                if (functions_1.currentUser == exports.defaultAdm) {
                     console.log(`Senha: ${user.password}`);
                 }
             });
@@ -113,7 +77,7 @@ class Users {
             console.log(`${chalk_1.default.bold(`----- USUÁRIO FILTRADO -----`)}`);
             filterdUsers.forEach(user => {
                 console.log(`\nID: ${chalk_1.default.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
-                if (index_1.currentUser == exports.defaultAdm) {
+                if (functions_1.currentUser == exports.defaultAdm) {
                     console.log(`Senha: ${user.password}`);
                 }
             });
@@ -143,26 +107,32 @@ class Users {
         else {
             switch (field) {
                 case "name":
-                    verify.verifyName(info);
-                    if (verify.error.length <= 0) {
+                    (0, functions_1.verifyName)(info);
+                    if (functions_1.error.length <= 0) {
                         exports.users[userIndex].name = info;
                     }
+                    else
+                        (0, functions_1.showErrors)();
                     break;
                 case "email":
-                    verify.verifyEmail(info);
-                    if (verify.error.length <= 0) {
+                    (0, functions_1.verifyEmail)(info);
+                    if (functions_1.error.length <= 0) {
                         exports.users[userIndex].email = info;
                     }
+                    else
+                        (0, functions_1.showErrors)();
                     break;
                 case "password":
-                    verify.verifyPassword(info);
-                    if (verify.error.length <= 0) {
-                        exports.users[userIndex].password = info;
+                    (0, functions_1.verifyPassword)(info);
+                    if (functions_1.error.length <= 0) {
+                        exports.users[userIndex].password = (0, functions_1.encrypt)(info);
                     }
+                    else
+                        (0, functions_1.showErrors)();
                     break;
                 case "role":
-                    verify.verifyRole(info);
-                    if (verify.error.length <= 0) {
+                    (0, functions_1.verifyRole)(info);
+                    if (functions_1.error.length <= 0) {
                         let userRole;
                         if (info === "adm") {
                             userRole = roleServices_1.admRole;
@@ -174,16 +144,16 @@ class Users {
                             userRole = roleServices_1.profRole;
                         exports.users[userIndex].role = userRole;
                     }
+                    else
+                        (0, functions_1.showErrors)();
                     break;
                 default:
                     clear();
-                    verify.error.push(`${chalk_1.default.bold("ERROR!008: ")}Campo inválido!`);
-                    verify.error.forEach((error) => {
-                        console.log(error);
-                    });
+                    functions_1.error.push(`${chalk_1.default.bold("ERROR!008: ")}Campo inválido!`);
+                    (0, functions_1.showErrors)();
                     break;
             }
-            if (verify.error.length <= 0) {
+            if (functions_1.error.length <= 0) {
                 clear();
                 console.log(`${chalk_1.default.bold(`----- USUÁRIO EDITADO -----`)}`);
                 console.log(`\nID: ${chalk_1.default.bold.green(exports.users[userIndex].id)}\nNome: ${exports.users[userIndex].name}\nE-mail: ${exports.users[userIndex].email}\nNivel de acesso: ${exports.users[userIndex].role.name}`);

@@ -40,8 +40,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.currentUser = void 0;
 //apenas para sincronizar o seeds com o index
+const functions_1 = require("./utils/functions");
 const userServices_1 = require("./services/userServices");
 const seeds = __importStar(require("./seeds/userSeeds"));
 console.log(seeds.teste1);
@@ -49,7 +49,6 @@ console.log(seeds.teste1);
 const commander_1 = require("commander");
 const chalk_1 = __importDefault(require("chalk"));
 const program = new commander_1.Command();
-exports.currentUser = userServices_1.defaultAdm;
 //add a new user
 program
     .command("newUser")
@@ -59,14 +58,14 @@ program
     .argument("<password>", "User password")
     .argument("<role>", "User role")
     .action((name, email, password, role) => {
-    if (!exports.currentUser.role.regisrterPerm) {
+    if (!functions_1.currentUser.role.regisrterPerm) {
         (0, userServices_1.clear)();
         console.log(chalk_1.default.bold("----- TENTE NOVAMENTE -----"));
         console.log("Você não tem a permissão necessaria para realizar essa ação!");
     }
     else {
         try {
-            exports.currentUser.registerUser(name, email, password, role);
+            functions_1.currentUser.registerUser(name, email, password, role);
         }
         catch (error) {
             (0, userServices_1.clear)();
@@ -79,7 +78,7 @@ program
     .command("listUsers")
     .description(chalk_1.default.bold("Lista todos os usuários cadastrados."))
     .action(() => {
-    if (!exports.currentUser.role.listAllPerm) {
+    if (!functions_1.currentUser.role.listAllPerm) {
         (0, userServices_1.clear)();
         console.log(chalk_1.default.bold("----- TENTE NOVAMENTE -----"));
         console.log("Você não tem a permissão necessaria para realizar essa ação!");
@@ -87,7 +86,7 @@ program
     else {
         try {
             (0, userServices_1.clear)();
-            exports.currentUser.listUsers();
+            functions_1.currentUser.listUsers();
         }
         catch (error) {
             (0, userServices_1.clear)();
@@ -101,7 +100,7 @@ program
     .description(chalk_1.default.bold("Lista o usuário pelo seu ID."))
     .argument("<ID>", "User ID")
     .action((ID) => {
-    if (!exports.currentUser.role.listByIdPerm) {
+    if (!functions_1.currentUser.role.listByIdPerm) {
         (0, userServices_1.clear)();
         console.log(chalk_1.default.bold("----- TENTE NOVAMENTE -----"));
         console.log("Você não tem a permissão necessaria para realizar essa ação!");
@@ -109,7 +108,7 @@ program
     else {
         try {
             (0, userServices_1.clear)();
-            exports.currentUser.listUserByID(ID);
+            functions_1.currentUser.listUserByID(ID);
         }
         catch (error) {
             (0, userServices_1.clear)();
@@ -123,7 +122,7 @@ program
     .description(chalk_1.default.bold("Remove o usuário pelo seu ID."))
     .argument("<ID>", "User ID")
     .action((ID) => {
-    if (!exports.currentUser.role.deletePerm) {
+    if (!functions_1.currentUser.role.deletePerm) {
         (0, userServices_1.clear)();
         console.log(chalk_1.default.bold("----- TENTE NOVAMENTE -----"));
         console.log("Você não tem a permissão necessaria para realizar essa ação!");
@@ -131,7 +130,7 @@ program
     else {
         try {
             (0, userServices_1.clear)();
-            exports.currentUser.deleteUser(ID);
+            functions_1.currentUser.deleteUser(ID);
         }
         catch (error) {
             (0, userServices_1.clear)();
@@ -147,19 +146,34 @@ program
     .argument("<field>", "field that you want to change")
     .argument("<info>", "New info for the field")
     .action((ID, field, info) => {
-    if (!exports.currentUser.role.updatePerm) {
+    if (!functions_1.currentUser.role.updatePerm) {
         (0, userServices_1.clear)();
         console.log(chalk_1.default.bold("----- TENTE NOVAMENTE -----"));
         console.log("Você não tem a permissão necessaria para realizar essa ação!");
     }
     else {
         try {
-            exports.currentUser.editUser(ID, field, info);
+            functions_1.currentUser.editUser(ID, field, info);
         }
         catch (error) {
             (0, userServices_1.clear)();
             console.log(error, "Não foi possivel cadastrar o novo usuário.");
         }
+    }
+});
+//change user
+program
+    .command("changeUser")
+    .description(chalk_1.default.bold("Troca o usuário que está operando o sistema"))
+    .argument("<role>", "novo nivel de acesso")
+    .action((role) => {
+    try {
+        (0, userServices_1.clear)();
+        (0, functions_1.changeUserRole)(role);
+    }
+    catch (error) {
+        (0, userServices_1.clear)();
+        console.log(error, "Não foi possivel trocar o nivel de acesso");
     }
 });
 program.parse();
