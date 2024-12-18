@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.error = exports.currentUser = void 0;
+exports.error = void 0;
 exports.changeUserRole = changeUserRole;
 exports.verifyName = verifyName;
 exports.verifyEmail = verifyEmail;
@@ -11,10 +11,12 @@ exports.verifyPassword = verifyPassword;
 exports.verifyRole = verifyRole;
 exports.encrypt = encrypt;
 exports.showErrors = showErrors;
+exports.clear = clear;
 const bcrypt_1 = require("bcrypt");
 const chalk_1 = __importDefault(require("chalk"));
+//import { saveDefaultUser } from '../services/csvServices';
+const roleServices_1 = require("../services/roleServices");
 const userServices_1 = require("../services/userServices");
-exports.currentUser = userServices_1.defaultAdm;
 exports.error = [];
 //change user
 function changeUserRole(role) {
@@ -26,13 +28,14 @@ function changeUserRole(role) {
     }
     else {
         if (role === "adm") {
-            exports.currentUser = userServices_1.defaultAdm;
+            userServices_1.defaultUser.role = roleServices_1.admRole;
         }
         else if (role === "guest") {
-            exports.currentUser = userServices_1.defaultGuest;
+            userServices_1.defaultUser.role = roleServices_1.guestRole;
         }
         else
-            exports.currentUser = userServices_1.defaultProf;
+            userServices_1.defaultUser.role = roleServices_1.profRole;
+        //saveDefaultUser();
         console.log(`Nivel de acesso da sessão atual atualizada para ${chalk_1.default.bold(role)}`);
     }
 }
@@ -68,4 +71,7 @@ function showErrors() {
     exports.error.forEach((error) => {
         console.log(error);
     });
+}
+function clear() {
+    console.log('\x1Bc');
 }
