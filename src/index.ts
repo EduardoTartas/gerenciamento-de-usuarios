@@ -1,21 +1,18 @@
-
 //import * as roleServices from '../src/services/roleServices';
 //import * as userServices from '../src/services/userServices';
 //import { Role } from './models/roles';
 //import defaultGuest from './services/userServices';
 
 //apenas para sincronizar o seeds com o index
-import {defaultAdm,clear} from './services/userServices';
-import * as seeds from './seeds/userSeeds';
-console.log(seeds.teste1);
-clear();
-
-
+import { changeUserRole, clear } from './utils/functions';
+import { defaultUser} from './services/userServices';
 
 import { Command } from "commander";
 import chalk from 'chalk';
+//import { loadDefaultUser } from './services/csvServices';
+
 const program = new Command();
-export let currentUser = defaultAdm;
+
 
 //add a new user
 program
@@ -26,90 +23,81 @@ program
   .argument("<password>", "User password")
   .argument("<role>", "User role")
   .action((name, email, password, role) => {
-    
-    if(!currentUser.role.regisrterPerm){
+    if (!defaultUser.role.regisrterPerm) {
       clear();
       console.log(chalk.bold("----- TENTE NOVAMENTE -----"))
       console.log("Você não tem a permissão necessaria para realizar essa ação!");
-    }
-    else{
-      try{
-        currentUser.registerUser(name, email, password, role);
-      }
-      catch(error){
+    } else {
+      try {
+        defaultUser.registerUser(name, email, password, role);
+      } catch (error) {
         clear();
-        console.log(error,"Não foi possivel cadastrar o novo usuário.")
+        console.log(error, "Não foi possivel cadastrar o novo usuário.")
       }
     }
   });
 
-  //list users
-  program
-    .command("listUsers")
-    .description(chalk.bold("Lista todos os usuários cadastrados."))
-    .action(()=>{
-      if(!currentUser.role.listAllPerm){
+//list users
+program
+  .command("listUsers")
+  .description(chalk.bold("Lista todos os usuários cadastrados."))
+  .action(() => {
+    if (!defaultUser.role.listAllPerm) {
+      clear();
+      console.log(chalk.bold("----- TENTE NOVAMENTE -----"))
+      console.log("Você não tem a permissão necessaria para realizar essa ação!");
+    } else {
+      try {
         clear();
-        console.log(chalk.bold("----- TENTE NOVAMENTE -----"))
-        console.log("Você não tem a permissão necessaria para realizar essa ação!");
+        defaultUser.listUsers();
+      } catch (error) {
+        clear();
+        console.log(error, "Não foi possivel listar os usuários.")
       }
-      else{
-        try{
-          clear();
-          currentUser.listUsers();
-        }
-        catch(error){
-          clear();
-          console.log(error,"Não foi possivel listar os usuários.")
-        }
-      }
-    });
+    }
+  });
 
-  //list users by id
-  program
-    .command("listUser")
-    .description(chalk.bold("Lista o usuário pelo seu ID."))
-    .argument("<ID>", "User ID")
-    .action((ID) =>{
-      if(!currentUser.role.listByIdPerm){
+//list users by id
+program
+  .command("listUser")
+  .description(chalk.bold("Lista o usuário pelo seu ID."))
+  .argument("<ID>", "User ID")
+  .action((ID) => {
+    if (!defaultUser.role.listByIdPerm) {
+      clear();
+      console.log(chalk.bold("----- TENTE NOVAMENTE -----"))
+      console.log("Você não tem a permissão necessaria para realizar essa ação!");
+    } else {
+      try {
         clear();
-        console.log(chalk.bold("----- TENTE NOVAMENTE -----"))
-        console.log("Você não tem a permissão necessaria para realizar essa ação!");
+        defaultUser.listUserByID(ID);
+      } catch (error) {
+        clear();
+        console.log(error, "Não foi possivel listar os usuários.")
       }
-      else{
-        try{
-          clear();
-          currentUser.listUserByID(ID);
-        }
-        catch(error){
-          clear();
-          console.log(error,"Não foi possivel listar os usuários.")
-        }
-      }
-    })
+    }
+  });
 
 //delete user by id
 program
-.command("deleteUser")
-.description(chalk.bold("Remove o usuário pelo seu ID."))
-.argument("<ID>", "User ID")
-.action((ID) =>{
-  if(!currentUser.role.deletePerm){
-    clear();
-    console.log(chalk.bold("----- TENTE NOVAMENTE -----"))
-    console.log("Você não tem a permissão necessaria para realizar essa ação!");
-  }
-  else{
-    try{
+  .command("deleteUser")
+  .description(chalk.bold("Remove o usuário pelo seu ID."))
+  .argument("<ID>", "User ID")
+  .action((ID) => {
+    if (!defaultUser.role.deletePerm) {
       clear();
-      currentUser.deleteUser(ID);
+      console.log(chalk.bold("----- TENTE NOVAMENTE -----"))
+      console.log("Você não tem a permissão necessaria para realizar essa ação!");
+    } else {
+      try {
+        clear();
+        defaultUser.deleteUser(ID);
+      } catch (error) {
+        clear();
+        console.log(error, "Não foi possivel excluir o usuário.")
+      }
     }
-    catch(error){
-      clear();
-      console.log(error,"Não foi possivel excluir o usuário.")
-    }
-  }
-})
+  });
 
 //edit user infos
 program
@@ -119,31 +107,38 @@ program
   .argument("<field>", "field that you want to change")
   .argument("<info>", "New info for the field")
   .action((ID, field, info) => {
-    
-    if(!currentUser.role.updatePerm){
+    if (!defaultUser.role.updatePerm) {
       clear();
       console.log(chalk.bold("----- TENTE NOVAMENTE -----"))
       console.log("Você não tem a permissão necessaria para realizar essa ação!");
-    }
-    else{
-      try{
-        currentUser.editUser(ID, field, info);
-      }
-      catch(error){
+    } else {
+      try {
+        defaultUser.editUser(ID, field, info);
+      } catch (error) {
         clear();
-        console.log(error,"Não foi possivel cadastrar o novo usuário.")
+        console.log(error, "Não foi possivel cadastrar o novo usuário.")
       }
     }
   });
 
-   
-program.parse();
+//change user
+program
+  .command("changeUser")
+  .description(chalk.bold("Troca o usuário que está operando o sistema"))
+  .argument("<role>", "novo nivel de acesso")
+  .action((role) => {
+    try {
+      clear();
+      changeUserRole(role);
+    } catch (error) {
+      clear();
+      console.log(error, "Não foi possivel trocar o nivel de acesso")
+    }
+  });
 
+program.parse();
 
 /* PARA FAZER
 1. Terminar funções principais
-    1.2. editar
-    1.3. trocar função
-2. Criptografia da senha
 3. Salvar no aquivo csv
 */
