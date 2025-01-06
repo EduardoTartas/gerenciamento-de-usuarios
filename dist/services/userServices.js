@@ -60,7 +60,7 @@ class Users {
             csvServices_1.users.forEach(user => {
                 console.log(`\nID: ${chalk_1.default.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
                 if (this.role == roleServices_1.admRole) {
-                    console.log(`Senha: ${user.password}\nCriação: ${user.registerDate.toLocaleDateString()}\nÚltima alteração: ${user.lastEdit.toLocaleDateString()}`);
+                    console.log(`Senha: ${user.password}\nCriação: ${user.registerDate.toLocaleDateString}\nÚltima alteração: ${user.lastEdit.toLocaleDateString()}`);
                 }
             });
         }
@@ -166,4 +166,5 @@ class Users {
     }
 }
 exports.Users = Users;
-exports.defaultUser = new Users("defaultAdm", "teste@gmail.com", "'123", roleServices_1.admRole);
+exports.defaultUser = new Users("defaultAdm", "default@gmail.com", "123", roleServices_1.admRole);
+csvServices_1.users.push(exports.defaultUser);

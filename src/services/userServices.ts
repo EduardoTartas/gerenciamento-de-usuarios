@@ -72,7 +72,7 @@ export class Users implements User {
             users.forEach(user => {
                 console.log(`\nID: ${chalk.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
                 if (this.role == admRole) {
-                    console.log(`Senha: ${user.password}\nCriação: ${user.registerDate.toLocaleDateString()}\nÚltima alteração: ${user.lastEdit.toLocaleDateString()}`);
+                    console.log(`Senha: ${user.password}\nCriação: ${user.registerDate.toLocaleDateString}\nÚltima alteração: ${user.lastEdit.toLocaleDateString()}`);
                 }
             })
         }
@@ -188,6 +188,7 @@ export class Users implements User {
     }
 }
 
-export const defaultUser = new Users("defaultAdm", "teste@gmail.com", "'123", admRole);
+export const defaultUser = new Users("defaultAdm", "default@gmail.com", "123", admRole);
+users.push(defaultUser);
 
 
