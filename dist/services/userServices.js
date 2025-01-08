@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.defaultUser = exports.Users = void 0;
+exports.Users = void 0;
 const uuid_1 = require("uuid");
 const roleServices_1 = require("./../services/roleServices");
 const csvServices_1 = require("../services/csvServices");
@@ -59,11 +59,12 @@ class Users {
             console.log(`${chalk_1.default.bold(`----- USUÁRIOS CADASTRADOS -----`)}`);
             csvServices_1.users.forEach(user => {
                 console.log(`\nID: ${chalk_1.default.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
-                if (this.role == roleServices_1.admRole) {
+                if (this.role === roleServices_1.admRole) {
                     console.log(`Senha: ${user.password}\nCriação: ${user.registerDate.toLocaleDateString()}\nÚltima alteração: ${user.lastEdit.toLocaleDateString()}`);
                 }
             });
         }
+        (0, csvServices_1.saveAsCsv)();
     }
     //list user by ID
     listUserByID(id) {
@@ -77,11 +78,12 @@ class Users {
             console.log(`${chalk_1.default.bold(`----- USUÁRIO FILTRADO -----`)}`);
             filterdUsers.forEach(user => {
                 console.log(`\nID: ${chalk_1.default.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
-                if (this.role == roleServices_1.admRole) {
+                if (this.role === roleServices_1.admRole) {
                     console.log(`Senha: ${user.password}\nCriação: ${user.registerDate.toLocaleDateString()}\nÚltima alteração: ${user.lastEdit.toLocaleDateString()}`);
                 }
             });
         }
+        (0, csvServices_1.saveAsCsv)();
     }
     //delete user by id
     deleteUser(id) {
@@ -166,5 +168,4 @@ class Users {
     }
 }
 exports.Users = Users;
-exports.defaultUser = new Users("defaultAdm", "default@gmail.com", "123", roleServices_1.admRole);
 //users.push(defaultUser);

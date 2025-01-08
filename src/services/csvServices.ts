@@ -1,14 +1,25 @@
 import fs from 'fs';
-import { Users, /*defaultUser*/ } from './userServices';
+import { Users } from './userServices';
 import { clear } from '../utils/functions';
 import chalk from 'chalk';
-import { /*admRole,*/ Roles } from './roleServices';
+import { admRole, guestRole, profRole} from './roleServices';
 
 const usersFilePath = '/home/eduardotartas/Documents/Gerencimento-de-usuarios/src/data/users.csv';
-
+export let defaultUser: Users;
 export let users: Users[] = [];
+
+// Carregar usuários do CSV
 loadUsers();
-//save users to csv
+
+// Definir usuário padrão
+
+if (users.length > 0) {
+    
+} else {
+    console.log(`${chalk.bold("ERROR!010: ")}Nenhum usuário padrão encontrado`);
+}
+
+// Salvar usuários no CSV
 export function saveAsCsv(): void {
     const row = users.map(user => {
         const role = user.role;
@@ -18,42 +29,57 @@ export function saveAsCsv(): void {
     fs.writeFile(usersFilePath, row, 'utf-8', (error) => {
         if (error) {
             clear();
-            console.log(`${chalk.bold("ERROR!009: ")}Nenhum usuário encontrado`);
+            console.log(`${chalk.bold("ERROR!009: ")}Erro ao salvar usuários.`);
         }
     });
 }
 
-//load users
+// Carregar usuários do CSV
 export function loadUsers(): void {
     const csvData = fs.readFileSync(usersFilePath, 'utf-8');
     const lines = csvData.split('\n');
-    const usersCSV = lines.filter(line => line.trim() !== "").map(line => {
+    users = lines.filter(line => line.trim() !== "").map(line => {
         const values = line.split(',');
 
-        const user: Users = {
-            id: values[0],
-            name: values[1],
-            email: values[2],
-            password: values[3],
-            role: new Roles(
-                values[4],
-                values[5] === "true",
-                values[6] === "true",
-                values[7] === "true",
-                values[8] === "true",
-                values[9] === "true"
-            ),
-            registerDate: new Date(values[10]),
-            lastEdit: new Date(values[11]),
-            status: values[12] === "true",
-            registerUser: () => { },
-            listUsers: () => { },
-            listUserByID: () => { },
-            deleteUser: () => { },
-            editUser: () => { }
-        };
+        //cria atribui as permissões a uma variavel
+        let role;
+        if (values[4] === "Administrador") {
+            role = admRole;
+        }
+        else if (values[4] === "Visitante") {
+            role = guestRole;
+        }
+        else role = profRole;
+
+        //constroi um novo objeto com base nas informaçoes do csv
+        const user = new Users(
+            values[1],
+            values[2], 
+            values[3],
+            role
+        );
+
+        //como o construtor do objeto atribui sozinho esses valores temos que editar depois do objeto ja criado
+        user.id = values[0];
+        user.registerDate = new Date(values[10]);
+        user.lastEdit = new Date(values[11]);
+        user.status = values[12] === "true";
+
         return user;
     });
-    users = usersCSV;
+
+
+for (let i = 0; i < users.length; i++) {
+    if (users[i].id === "1122334455") { // Check if user ID matches
+        defaultUser = users[i]; // Set default user // Mark as found
+        break; // Exit loop
+    }
 }
 
+if (!defaultUser) {
+    defaultUser = new Users("DefaultUser", "default@user.com", "Def4ult!", admRole);
+    defaultUser.id = "1122334455";
+    users.push(defaultUser); // Add new default user
+}
+
+}

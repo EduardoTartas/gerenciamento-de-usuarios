@@ -5,17 +5,18 @@
 
 //apenas para sincronizar o seeds com o index
 import { changeUserRole, clear } from './utils/functions';
-import { defaultUser} from './services/userServices';
+import { defaultUser} from './services/csvServices';
 
 import { Command } from "commander";
 import chalk from 'chalk';
 //import { loadDefaultUser } from './services/csvServices';
 
 const program = new Command();
-
+console.log(defaultUser); // Log defaultUser to verify initialization
 
 //add a new user
 program
+
   .command("newUser")
   .description(chalk.bold("Adiciona um novo usuário."))
   .argument("<name>", "User name")

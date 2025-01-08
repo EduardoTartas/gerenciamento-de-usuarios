@@ -1,7 +1,7 @@
 import { User } from './../models/user';
 import { v4 as uuid } from 'uuid';
 import { admRole, guestRole, profRole, Roles } from './../services/roleServices';
-import { saveAsCsv, users } from '../services/csvServices';
+import { /*defaultUser,*/ saveAsCsv, users } from '../services/csvServices';
 import { verifyName, verifyEmail, verifyPassword, verifyRole, encrypt, error, showErrors, clear } from '../utils/functions';
 import chalk from 'chalk';
 
@@ -62,6 +62,7 @@ export class Users implements User {
     }
 
     listUsers(): void {
+        
         if (users.length <= 0) {
             clear();
             console.log(`${chalk.bold("ERROR!004: ")}Nenhum usuário encontrado`);
@@ -71,11 +72,12 @@ export class Users implements User {
             console.log(`${chalk.bold(`----- USUÁRIOS CADASTRADOS -----`)}`);
             users.forEach(user => {
                 console.log(`\nID: ${chalk.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
-                if (this.role == admRole) {
+                if (this.role === admRole) {
                     console.log(`Senha: ${user.password}\nCriação: ${user.registerDate.toLocaleDateString()}\nÚltima alteração: ${user.lastEdit.toLocaleDateString()}`);
                 }
             })
         }
+        saveAsCsv();
     }
 
     //list user by ID
@@ -91,11 +93,12 @@ export class Users implements User {
             console.log(`${chalk.bold(`----- USUÁRIO FILTRADO -----`)}`);
             filterdUsers.forEach(user => {
                 console.log(`\nID: ${chalk.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
-                if (this.role == admRole) {
+                if (this.role === admRole) {
                     console.log(`Senha: ${user.password}\nCriação: ${user.registerDate.toLocaleDateString()}\nÚltima alteração: ${user.lastEdit.toLocaleDateString()}`);
                 }
             })
         }
+        saveAsCsv();
     }
 
     //delete user by id
@@ -188,7 +191,7 @@ export class Users implements User {
     }
 }
 
-export const defaultUser = new Users("defaultAdm", "default@gmail.com", "123", admRole);
+
 //users.push(defaultUser);
 
 

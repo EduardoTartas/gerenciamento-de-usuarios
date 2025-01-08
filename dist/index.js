@@ -9,11 +9,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 //apenas para sincronizar o seeds com o index
 const functions_1 = require("./utils/functions");
-const userServices_1 = require("./services/userServices");
+const csvServices_1 = require("./services/csvServices");
 const commander_1 = require("commander");
 const chalk_1 = __importDefault(require("chalk"));
 //import { loadDefaultUser } from './services/csvServices';
 const program = new commander_1.Command();
+console.log(csvServices_1.defaultUser); // Log defaultUser to verify initialization
 //add a new user
 program
     .command("newUser")
@@ -23,14 +24,14 @@ program
     .argument("<password>", "User password")
     .argument("<role>", "User role")
     .action((name, email, password, role) => {
-    if (!userServices_1.defaultUser.role.regisrterPerm) {
+    if (!csvServices_1.defaultUser.role.regisrterPerm) {
         (0, functions_1.clear)();
         console.log(chalk_1.default.bold("----- TENTE NOVAMENTE -----"));
         console.log("Você não tem a permissão necessaria para realizar essa ação!");
     }
     else {
         try {
-            userServices_1.defaultUser.registerUser(name, email, password, role);
+            csvServices_1.defaultUser.registerUser(name, email, password, role);
         }
         catch (error) {
             (0, functions_1.clear)();
@@ -43,7 +44,7 @@ program
     .command("listUsers")
     .description(chalk_1.default.bold("Lista todos os usuários cadastrados."))
     .action(() => {
-    if (!userServices_1.defaultUser.role.listAllPerm) {
+    if (!csvServices_1.defaultUser.role.listAllPerm) {
         (0, functions_1.clear)();
         console.log(chalk_1.default.bold("----- TENTE NOVAMENTE -----"));
         console.log("Você não tem a permissão necessaria para realizar essa ação!");
@@ -51,7 +52,7 @@ program
     else {
         try {
             (0, functions_1.clear)();
-            userServices_1.defaultUser.listUsers();
+            csvServices_1.defaultUser.listUsers();
         }
         catch (error) {
             (0, functions_1.clear)();
@@ -65,7 +66,7 @@ program
     .description(chalk_1.default.bold("Lista o usuário pelo seu ID."))
     .argument("<ID>", "User ID")
     .action((ID) => {
-    if (!userServices_1.defaultUser.role.listByIdPerm) {
+    if (!csvServices_1.defaultUser.role.listByIdPerm) {
         (0, functions_1.clear)();
         console.log(chalk_1.default.bold("----- TENTE NOVAMENTE -----"));
         console.log("Você não tem a permissão necessaria para realizar essa ação!");
@@ -73,7 +74,7 @@ program
     else {
         try {
             (0, functions_1.clear)();
-            userServices_1.defaultUser.listUserByID(ID);
+            csvServices_1.defaultUser.listUserByID(ID);
         }
         catch (error) {
             (0, functions_1.clear)();
@@ -87,7 +88,7 @@ program
     .description(chalk_1.default.bold("Remove o usuário pelo seu ID."))
     .argument("<ID>", "User ID")
     .action((ID) => {
-    if (!userServices_1.defaultUser.role.deletePerm) {
+    if (!csvServices_1.defaultUser.role.deletePerm) {
         (0, functions_1.clear)();
         console.log(chalk_1.default.bold("----- TENTE NOVAMENTE -----"));
         console.log("Você não tem a permissão necessaria para realizar essa ação!");
@@ -95,7 +96,7 @@ program
     else {
         try {
             (0, functions_1.clear)();
-            userServices_1.defaultUser.deleteUser(ID);
+            csvServices_1.defaultUser.deleteUser(ID);
         }
         catch (error) {
             (0, functions_1.clear)();
@@ -111,14 +112,14 @@ program
     .argument("<field>", "field that you want to change")
     .argument("<info>", "New info for the field")
     .action((ID, field, info) => {
-    if (!userServices_1.defaultUser.role.updatePerm) {
+    if (!csvServices_1.defaultUser.role.updatePerm) {
         (0, functions_1.clear)();
         console.log(chalk_1.default.bold("----- TENTE NOVAMENTE -----"));
         console.log("Você não tem a permissão necessaria para realizar essa ação!");
     }
     else {
         try {
-            userServices_1.defaultUser.editUser(ID, field, info);
+            csvServices_1.defaultUser.editUser(ID, field, info);
         }
         catch (error) {
             (0, functions_1.clear)();
