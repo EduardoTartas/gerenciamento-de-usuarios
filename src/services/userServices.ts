@@ -176,6 +176,7 @@ export class Users implements User {
                 console.log(`${chalk.bold(`----- USUÁRIO EDITADO -----`)}`);
                 console.log(`\nID: ${chalk.bold.green(users[userIndex].id)}\nNome: ${users[userIndex].name}\nE-mail: ${users[userIndex].email}\nNivel de acesso: ${users[userIndex].role.name}`);
                 console.log(`\nCampo ${chalk.bold(field)} alterado com sucesso!`);
+                saveAsCsv();
             }
 
         }
