@@ -20,6 +20,7 @@ class Users {
         this.lastEdit = new Date();
         this.status = true;
     }
+    //register new users
     registerUser(name, email, password, roles) {
         let role = roles.toLocaleLowerCase();
         (0, functions_1.verifyName)(name);
@@ -38,7 +39,6 @@ class Users {
                 userRole = roleServices_1.profRole;
             const newUser = new Users(name, email, (0, functions_1.encrypt)(password), userRole);
             csvServices_1.users.push(newUser);
-            console.log(csvServices_1.users);
             (0, csvServices_1.saveAsCsv)();
             (0, functions_1.clear)();
             console.log("Usuário criado com Sucesso");
@@ -49,8 +49,9 @@ class Users {
             (0, functions_1.showErrors)();
         }
     }
+    //list all users
     listUsers() {
-        if (csvServices_1.users.length <= 0) {
+        if (csvServices_1.users.length <= 0 || csvServices_1.users.length == 1 && this.status == false) {
             (0, functions_1.clear)();
             console.log(`${chalk_1.default.bold("ERROR!004: ")}Nenhum usuário encontrado`);
         }
@@ -58,13 +59,18 @@ class Users {
             (0, functions_1.clear)();
             console.log(`${chalk_1.default.bold(`----- USUÁRIOS CADASTRADOS -----`)}`);
             csvServices_1.users.forEach(user => {
-                console.log(`\nID: ${chalk_1.default.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
-                if (this.role === roleServices_1.admRole) {
-                    console.log(`Senha: ${user.password}\nCriação: ${user.registerDate.toLocaleDateString()}\nÚltima alteração: ${user.lastEdit.toLocaleDateString()}`);
+                //do not show the default user
+                if (user.status == false) {
+                }
+                //list users
+                else {
+                    console.log(`\nID: ${chalk_1.default.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
+                    if (this.role === roleServices_1.admRole) {
+                        console.log(`Senha: ${user.password}\nCriação: ${user.registerDate.toLocaleDateString("pt-BR")}\nÚltima alteração: ${user.lastEdit.toLocaleDateString("pt-BR")}`);
+                    }
                 }
             });
         }
-        (0, csvServices_1.saveAsCsv)();
     }
     //list user by ID
     listUserByID(id) {
@@ -79,11 +85,10 @@ class Users {
             filterdUsers.forEach(user => {
                 console.log(`\nID: ${chalk_1.default.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
                 if (this.role === roleServices_1.admRole) {
-                    console.log(`Senha: ${user.password}\nCriação: ${user.registerDate.toLocaleDateString()}\nÚltima alteração: ${user.lastEdit.toLocaleDateString()}`);
+                    console.log(`Senha: ${user.password}\nCriação: ${user.registerDate.toLocaleDateString("pt-BR")}\nÚltima alteração: ${user.lastEdit.toLocaleDateString("pt-BR")}`);
                 }
             });
         }
-        (0, csvServices_1.saveAsCsv)();
     }
     //delete user by id
     deleteUser(id) {
@@ -101,6 +106,7 @@ class Users {
             (0, csvServices_1.saveAsCsv)();
         }
     }
+    //edit user fields
     editUser(id, field, info) {
         let userIndex = csvServices_1.users.findIndex(user => user.id === id);
         if (userIndex === -1) {
@@ -168,4 +174,3 @@ class Users {
     }
 }
 exports.Users = Users;
-//users.push(defaultUser);

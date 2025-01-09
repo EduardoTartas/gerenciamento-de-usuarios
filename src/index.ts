@@ -1,22 +1,12 @@
-//import * as roleServices from '../src/services/roleServices';
-//import * as userServices from '../src/services/userServices';
-//import { Role } from './models/roles';
-//import defaultGuest from './services/userServices';
+import {changeUserRole, clear} from './utils/functions';
+import {defaultUser} from './services/csvServices';
 
-//apenas para sincronizar o seeds com o index
-import { changeUserRole, clear } from './utils/functions';
-import { defaultUser} from './services/csvServices';
-
-import { Command } from "commander";
+import {Command} from "commander";
 import chalk from 'chalk';
-//import { loadDefaultUser } from './services/csvServices';
-
 const program = new Command();
-console.log(defaultUser); // Log defaultUser to verify initialization
 
 //add a new user
 program
-
   .command("newUser")
   .description(chalk.bold("Adiciona um novo usuário."))
   .argument("<name>", "User name")
@@ -138,8 +128,3 @@ program
   });
 
 program.parse();
-
-/* PARA FAZER
-1. Terminar funções principais
-3. Salvar no aquivo csv
-*/

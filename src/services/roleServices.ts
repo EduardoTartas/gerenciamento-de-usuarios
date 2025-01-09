@@ -9,7 +9,7 @@ export class Roles implements Role {
     updatePerm: boolean;
 
     constructor(
-        name:string,
+        name: string,
         regisrterPerm: boolean,
         listAllPerm: boolean,
         listByIdPerm: boolean,
@@ -25,6 +25,6 @@ export class Roles implements Role {
     }
 }
 
-export const admRole   = new Roles("Administrador", true, true, true, true, true);
+export const admRole = new Roles("Administrador", true, true, true, true, true);
 export const guestRole = new Roles("Visitante", false, true, true, false, false);
-export const profRole  = new Roles("Professor",true, true, true, false, true);
+export const profRole = new Roles("Professor", true, true, true, false, true);

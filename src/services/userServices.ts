@@ -1,12 +1,11 @@
-import { User } from './../models/user';
-import { v4 as uuid } from 'uuid';
-import { admRole, guestRole, profRole, Roles } from './../services/roleServices';
-import { /*defaultUser,*/ saveAsCsv, users } from '../services/csvServices';
-import { verifyName, verifyEmail, verifyPassword, verifyRole, encrypt, error, showErrors, clear } from '../utils/functions';
+import {User} from './../models/user';
+import {v4 as uuid} from 'uuid';
+import {admRole, guestRole, profRole, Roles} from './../services/roleServices';
+import {saveAsCsv, users} from '../services/csvServices';
+import {verifyName, verifyEmail, verifyPassword, verifyRole, encrypt, error, showErrors, clear} from '../utils/functions';
 import chalk from 'chalk';
 
 export class Users implements User {
-
     id: string;
     name: string;
     email: string;
@@ -27,6 +26,7 @@ export class Users implements User {
         this.status = true;
     }
 
+    //register new users
     registerUser(name: string, email: string, password: string, roles: string): void {
         let role = roles.toLocaleLowerCase();
 
@@ -40,44 +40,44 @@ export class Users implements User {
 
             if (role === "adm") {
                 userRole = admRole;
-            }
-            else if (role === "guest") {
+            } else if (role === "guest") {
                 userRole = guestRole;
-            }
-            else userRole = profRole;
-
+            } else userRole = profRole;
 
             const newUser = new Users(name, email, encrypt(password), userRole);
             users.push(newUser);
-            console.log(users);
             saveAsCsv();
             clear();
             console.log("Usuário criado com Sucesso");
-        }
-        else {
+        } else {
             clear();
             console.log(`${chalk.bold(`----- TENTE NOVAMENTE -----`)}`);
             showErrors();
         }
     }
 
+    //list all users
     listUsers(): void {
-        
-        if (users.length <= 0) {
+        if (users.length <= 0 || users.length == 1 && this.status == false) {
             clear();
             console.log(`${chalk.bold("ERROR!004: ")}Nenhum usuário encontrado`);
-        }
-        else {
+        } else {
             clear();
             console.log(`${chalk.bold(`----- USUÁRIOS CADASTRADOS -----`)}`);
             users.forEach(user => {
-                console.log(`\nID: ${chalk.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
-                if (this.role === admRole) {
-                    console.log(`Senha: ${user.password}\nCriação: ${user.registerDate.toLocaleDateString()}\nÚltima alteração: ${user.lastEdit.toLocaleDateString()}`);
+                //do not show the default user
+                if (user.status == false) {
                 }
+                //list users
+                else {
+                    console.log(`\nID: ${chalk.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
+                    if (this.role === admRole) {
+                        console.log(`Senha: ${user.password}\nCriação: ${user.registerDate.toLocaleDateString("pt-BR")}\nÚltima alteração: ${user.lastEdit.toLocaleDateString("pt-BR")}`);
+                    }
+                }
+
             })
         }
-        saveAsCsv();
     }
 
     //list user by ID
@@ -87,18 +87,16 @@ export class Users implements User {
         if (filterdUsers.length <= 0) {
             clear();
             console.log(`${chalk.bold("ERROR!005: ")}Nenhum usuário encontrado`);
-        }
-        else {
+        } else {
             clear();
             console.log(`${chalk.bold(`----- USUÁRIO FILTRADO -----`)}`);
             filterdUsers.forEach(user => {
                 console.log(`\nID: ${chalk.bold.green(user.id)}\nNome: ${user.name}\nE-mail: ${user.email}\nNivel de acesso: ${user.role.name}`);
                 if (this.role === admRole) {
-                    console.log(`Senha: ${user.password}\nCriação: ${user.registerDate.toLocaleDateString()}\nÚltima alteração: ${user.lastEdit.toLocaleDateString()}`);
+                    console.log(`Senha: ${user.password}\nCriação: ${user.registerDate.toLocaleDateString("pt-BR")}\nÚltima alteração: ${user.lastEdit.toLocaleDateString("pt-BR")}`);
                 }
             })
         }
-        saveAsCsv();
     }
 
     //delete user by id
@@ -108,8 +106,7 @@ export class Users implements User {
         if (userIndex === -1) {
             clear();
             console.log(`${chalk.bold("ERROR!006: ")}Nenhum usuário encontrado`);
-        }
-        else {
+        } else {
             clear();
             console.log(`${chalk.bold(`----- USUÁRIO DELETADO -----`)}`);
             console.log(`\nID: ${chalk.bold.green(users[userIndex].id)}\nNome: ${users[userIndex].name}\nE-mail: ${users[userIndex].email}\nNivel de acesso: ${users[userIndex].role.name}`);
@@ -119,21 +116,20 @@ export class Users implements User {
         }
     }
 
+    //edit user fields
     editUser(id: string, field: string, info: string): void {
         let userIndex = users.findIndex(user => user.id === id);
         if (userIndex === -1) {
             clear();
             console.log(`${chalk.bold("ERROR!007: ")}Nenhum usuário encontrado`);
-        }
-        else {
+        } else {
             switch (field) {
 
                 case "name":
                     verifyName(info);
                     if (error.length <= 0) {
                         users[userIndex].name = info;
-                    }
-                    else showErrors();
+                    } else showErrors();
 
                     break;
 
@@ -141,16 +137,14 @@ export class Users implements User {
                     verifyEmail(info);
                     if (error.length <= 0) {
                         users[userIndex].email = info;
-                    }
-                    else showErrors();
+                    } else showErrors();
                     break;
 
                 case "password":
                     verifyPassword(info);
                     if (error.length <= 0) {
                         users[userIndex].password = encrypt(info);
-                    }
-                    else showErrors();
+                    } else showErrors();
                     break;
 
                 case "role":
@@ -160,15 +154,12 @@ export class Users implements User {
 
                         if (info === "adm") {
                             userRole = admRole;
-                        }
-                        else if (info === "guest") {
+                        } else if (info === "guest") {
                             userRole = guestRole;
-                        }
-                        else userRole = profRole;
+                        } else userRole = profRole;
 
                         users[userIndex].role = userRole;
-                    }
-                    else showErrors();
+                    } else showErrors();
                     break;
 
                 default:
@@ -190,8 +181,3 @@ export class Users implements User {
         }
     }
 }
-
-
-//users.push(defaultUser);
-
-

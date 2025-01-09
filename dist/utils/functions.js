@@ -12,13 +12,12 @@ exports.verifyRole = verifyRole;
 exports.encrypt = encrypt;
 exports.showErrors = showErrors;
 exports.clear = clear;
-const bcrypt_1 = require("bcrypt");
-const chalk_1 = __importDefault(require("chalk"));
-//import { saveDefaultUser } from '../services/csvServices';
 const roleServices_1 = require("../services/roleServices");
 const csvServices_1 = require("../services/csvServices");
+const bcrypt_1 = require("bcrypt");
+const chalk_1 = __importDefault(require("chalk"));
 exports.error = [];
-//change user
+//change defaultUsers role
 function changeUserRole(role) {
     if (role !== "adm" && role !== "guest" && role !== "prof") {
         exports.error.push(`${chalk_1.default.bold("ERROR!009: ")}Selecione entre os niveis de acesso existente! 'adm', 'guest' ou 'prof'`);
@@ -40,33 +39,31 @@ function changeUserRole(role) {
         (0, csvServices_1.saveAsCsv)();
     }
 }
+//verify fields
 function verifyName(name) {
-    exports.error = []; // Clear previous errors
     let nameRegex = /^[\s\S]{3,25}$/;
     if (!nameRegex.test(name)) {
         exports.error.push(`${chalk_1.default.bold("ERROR!000: ")}Digite o nome do usuário, com no mínimo 3 e no maximo 25 caracteres`);
     }
 }
 function verifyEmail(email) {
-    exports.error = []; // Clear previous errors
     let emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
     if (!emailRegex.test(email)) {
         exports.error.push(`${chalk_1.default.bold("ERROR!001: ")}Digite um email válido para o usuário`);
     }
 }
 function verifyPassword(password) {
-    exports.error = []; // Clear previous errors
     let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/;
     if (!passwordRegex.test(password)) {
         exports.error.push(`${chalk_1.default.bold("ERROR!002: ")}Digite uma senha com no mínimo 8 caracteres, letras maiúsculas, letras minúsculas e um caracter especial`);
     }
 }
 function verifyRole(role) {
-    exports.error = []; // Clear previous errors
     if (role !== "adm" && role !== "guest" && role !== "prof") {
         exports.error.push(`${chalk_1.default.bold("ERROR!003: ")}Selecione entre os niveis de acesso existente! 'adm', 'guest' ou 'prof'`);
     }
 }
+//encrypt password
 function encrypt(password) {
     const passwordHash = (0, bcrypt_1.hashSync)(password, 8);
     return passwordHash;
@@ -77,6 +74,7 @@ function showErrors() {
         console.log(error);
     });
 }
+//clear terminal
 function clear() {
     console.log('\x1Bc');
 }

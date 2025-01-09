@@ -1,20 +1,13 @@
 "use strict";
-//import * as roleServices from '../src/services/roleServices';
-//import * as userServices from '../src/services/userServices';
-//import { Role } from './models/roles';
-//import defaultGuest from './services/userServices';
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-//apenas para sincronizar o seeds com o index
 const functions_1 = require("./utils/functions");
 const csvServices_1 = require("./services/csvServices");
 const commander_1 = require("commander");
 const chalk_1 = __importDefault(require("chalk"));
-//import { loadDefaultUser } from './services/csvServices';
 const program = new commander_1.Command();
-console.log(csvServices_1.defaultUser); // Log defaultUser to verify initialization
 //add a new user
 program
     .command("newUser")
@@ -143,7 +136,3 @@ program
     }
 });
 program.parse();
-/* PARA FAZER
-1. Terminar funções principais
-3. Salvar no aquivo csv
-*/ 
