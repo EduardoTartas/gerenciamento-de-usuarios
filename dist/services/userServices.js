@@ -169,7 +169,6 @@ class Users {
                 console.log(`${chalk_1.default.bold(`----- USUÁRIO EDITADO -----`)}`);
                 console.log(`\nID: ${chalk_1.default.bold.green(csvServices_1.users[userIndex].id)}\nNome: ${csvServices_1.users[userIndex].name}\nE-mail: ${csvServices_1.users[userIndex].email}\nNivel de acesso: ${csvServices_1.users[userIndex].role.name}`);
                 console.log(`\nCampo ${chalk_1.default.bold(field)} alterado com sucesso!`);
-                console.log(csvServices_1.users[userIndex].lastEdit);
                 (0, csvServices_1.saveAsCsv)();
             }
         }

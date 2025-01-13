@@ -4,7 +4,7 @@ import { clear } from '../utils/functions';
 import chalk from 'chalk';
 import { admRole, guestRole, profRole} from './roleServices';
 
-const usersFilePath = '/home/eduardotartas/Documents/Gerencimento-de-usuarios/src/data/users.csv';
+const usersFilePath = '/home/eduardotartas/Documents/gerencimento-de-usuarios/data/users.csv';
 export let defaultUser: Users;
 export let users: Users[] = [];
 loadUsers();

@@ -11,7 +11,7 @@ const userServices_1 = require("./userServices");
 const functions_1 = require("../utils/functions");
 const chalk_1 = __importDefault(require("chalk"));
 const roleServices_1 = require("./roleServices");
-const usersFilePath = '/home/eduardotartas/Documents/Gerencimento-de-usuarios/src/data/users.csv';
+const usersFilePath = '/home/eduardotartas/Documents/gerencimento-de-usuarios/data/users.csv';
 exports.users = [];
 loadUsers();
 // save users to CSV
