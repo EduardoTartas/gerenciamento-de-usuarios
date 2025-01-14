@@ -68,7 +68,7 @@ Aqui estão alguns exemplos práticos para testar os comandos disponíveis no pr
    Para adicionar um novo usuário, execute o seguinte comando:  
 
    ```
-   node index.js newUser "Eduardo Tartas" "Eduardo@example.com" "mypassword" admin
+   node index.js newUser "Eduardo Tartas" "Eduardo@example.com" "mypassword" "admin"
    ```
 
 2. **Listar todos os usuários**  
@@ -82,26 +82,26 @@ Aqui estão alguns exemplos práticos para testar os comandos disponíveis no pr
    Para exibir as informações de um usuário específico, forneça o ID:  
 
      ```
-     node index.js listUser 123
+     node index.js listUser "123"
      ```
 
 4. **Remover um usuário pelo ID**  
    Para excluir um usuário pelo ID:  
 
    ```
-   node index.js deleteUser 123
+   node index.js deleteUser "123"
    ```
 
 5. **Editar as informações de um usuário**  
    Para alterar um campo específico de um usuário, forneça o ID, o campo e o novo valor:  
 
    ```
-   node index.js editUser 123 email new_email@example.com
+   node index.js editUser "123" "email" "new_email@example.com"
    ```
 
 6. **Alterar o papel (role) do usuário ativo**  
    Para modificar o papel do usuário atualmente ativo no sistema:  
 
    ```
-   node index.js changeUser admin
+   node index.js changeUser "admin"
    ```
